@@ -1,0 +1,1 @@
+import{G as e,I as t}from"./index-BCFUOWbP.js";function n(n,r,i){let a=new t;a.rotation.y=i;let o=new e().makeRotationY(i);for(let e of[...n.children])r.includes(e)?e.traverse(e=>{e.geometry&&(e.geometry.applyMatrix4(o),e.geometry.computeBoundingSphere(),e.geometry.computeBoundingBox())}):(n.remove(e),a.add(e));return n.add(a),n.rotation.y=0,n}export{n as t};
