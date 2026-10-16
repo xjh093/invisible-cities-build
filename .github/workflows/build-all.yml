@@ -2,8 +2,15 @@ name: Build executables for all platforms
 
 # This repo's root IS the build-windows folder (launcher.py and
 # invisible-cities/ live at the top level). Push to main/master and GitHub's
-# free runners build Windows, Intel Mac and Apple Silicon Mac executables in
-# parallel — no Windows or Mac machine needed on your end.
+# free runners build Windows and Apple Silicon Mac executables in parallel —
+# no Windows or Mac machine needed on your end.
+#
+# Intel Mac is intentionally NOT included here: Apple stopped making Intel
+# hardware, so GitHub only offers Intel macOS as a paid "larger runner" now
+# (billed per-minute even on public repos, unlike the free standard runners
+# below). To get an Intel Mac build, use the separate build-intel/ folder on
+# an actual Intel Mac instead.
+#
 # Download each result from the workflow run's "Artifacts" section.
 
 on:
@@ -20,11 +27,7 @@ jobs:
             artifact: InvisibleCities-Windows-x86_64
             data-sep: ";"
             exe-suffix: ".exe"
-          - os: macos-13
-            artifact: InvisibleCities-macOS-Intel-x86_64
-            data-sep: ":"
-            exe-suffix: ""
-          - os: macos-14
+          - os: macos-latest
             artifact: InvisibleCities-macOS-AppleSilicon-arm64
             data-sep: ":"
             exe-suffix: ""
