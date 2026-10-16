@@ -1,0 +1,45 @@
+name: Build executables for all platforms
+
+# This repo's root IS the build-windows folder (launcher.py and
+# invisible-cities/ live at the top level). Push to main/master and GitHub's
+# free runners build Windows, Intel Mac and Apple Silicon Mac executables in
+# parallel — no Windows or Mac machine needed on your end.
+# Download each result from the workflow run's "Artifacts" section.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, master]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            artifact: InvisibleCities-Windows-x86_64
+            data-sep: ";"
+            exe-suffix: ".exe"
+          - os: macos-13
+            artifact: InvisibleCities-macOS-Intel-x86_64
+            data-sep: ":"
+            exe-suffix: ""
+          - os: macos-14
+            artifact: InvisibleCities-macOS-AppleSilicon-arm64
+            data-sep: ":"
+            exe-suffix: ""
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install PyInstaller
+        run: pip install pyinstaller
+      - name: Build
+        run: |
+          pyinstaller --onefile --name "${{ matrix.artifact }}" --add-data "invisible-cities${{ matrix.data-sep }}invisible-cities" launcher.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: dist/${{ matrix.artifact }}${{ matrix.exe-suffix }}
